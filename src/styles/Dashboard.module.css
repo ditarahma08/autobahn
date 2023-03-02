@@ -1,0 +1,22 @@
+.logout {
+	cursor: pointer;
+}
+
+.data {
+	border: 1px solid #ced4da;
+	border-radius: 50px;
+}
+
+.bar span {
+	background-color: rgba(255, 99, 132, 0.5);
+	height: 100px;
+	width: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.chart {
+	max-width: 500px;
+	margin: auto;
+}
