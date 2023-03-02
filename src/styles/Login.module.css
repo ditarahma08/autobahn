@@ -1,0 +1,53 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6rem;
+  min-height: 100vh;
+  padding-top: 20vh;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.boxAction {
+  margin-top: 20px;
+}
+
+.boxAction a {
+  font-size: 12px;
+  text-decoration: none;
+  margin-top: 20px;
+}
+
+.formInput, .formInput:focus {
+  background: none;
+  border-radius: 25px;
+  border-color: var(--background-start-rgb);
+  color: #ced4da;
+  transition: 0.25s;
+}
+
+.formInput {
+  margin: 10px 0;
+  width: 300px;
+}
+
+.formInput:focus {
+  width: 325px;
+}
+
+.warning {
+  font-size: 12px;
+  color: red;
+}
+
+.success {
+  font-size: 12px;
+  color: green;
+  text-align: center;
+}
