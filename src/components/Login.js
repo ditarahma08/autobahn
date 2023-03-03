@@ -2,11 +2,14 @@ import styles from '@/styles/Login.module.css'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { api } from '@/utils/api';
+import { connect } from "react-redux"
+import { setInfo } from "../../store/actions/main"
 import Cookies from 'js-cookie';
 
 import MainLayout from '../layouts/MainLayout'
 
-const Login = () => {
+const Login = (props) => {
+	const { name, setInfo } = props
 	const router = useRouter();
 
 	const [formState, setFormState] = useState('login');
@@ -48,10 +51,10 @@ const Login = () => {
 				console.log(response)
 				if (response.data.status) {
 					Cookies.set('authToken', response?.data?.token, { expires: 1, path: '/' });
-					console.log('harusnya kesini')
+					setInfo(response?.data?.data?.username)
 
 					setTimeout(() => {
-						router.push(`/dashboard/${name}`)
+						router.push(`/dashboard/${response?.data?.data?.username}`)
 					}, 500)
 				}
 			})
@@ -164,4 +167,12 @@ const Login = () => {
 	);
 }
 
-export default Login
+const mapStateToProps = state => {
+	return { name: state.main.name }
+}
+
+const mapDispatchToProps = {
+	setInfo
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

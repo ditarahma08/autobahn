@@ -15,7 +15,9 @@ ChartJS.register(
   Tooltip,
 )
 
-const Dashboard = () => {
+const Dashboard = (props) => {
+	const { slug } = props
+
 	const options = {
 	  responsive: true,
 	  maintainAspectRatio: true,
@@ -43,7 +45,7 @@ const Dashboard = () => {
 	return (
 		<div className={`container`}>
 			<div className={`d-flex justify-content-between m-5`}>
-				<p>Hello, User</p>
+				<p>Hello, {slug}</p>
 				<p className={styles.logout}>Logout</p>
 			</div>
 
@@ -71,3 +73,8 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+
+export async function getServerSideProps({ query }) {
+	 const { slug } = query;
+	 return { props: { slug } }
+}
