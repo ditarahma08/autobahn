@@ -7,6 +7,9 @@ import {
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import styles from '@/styles/Dashboard.module.css'
+import Cookies from 'js-cookie'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 ChartJS.register(
   CategoryScale,
@@ -15,8 +18,11 @@ ChartJS.register(
   Tooltip,
 )
 
+const token = Cookies.get('authToken')
+
 const Dashboard = (props) => {
 	const { slug } = props
+	const router = useRouter();
 
 	const options = {
 	  responsive: true,
@@ -42,11 +48,22 @@ const Dashboard = (props) => {
 	  ],
 	}
 
+	const logout = () => {
+		token && Cookies.remove('authToken', { path: '/' })
+		router.push('/')
+	}
+
+	useEffect(() => {
+		if (!token) {
+			router.push('/')
+		}
+	})
+
 	return (
 		<div className={`container`}>
 			<div className={`d-flex justify-content-between m-5`}>
 				<p>Hello, {slug}</p>
-				<p className={styles.logout}>Logout</p>
+				<p className={styles.logout} onClick={() => logout()}>Logout</p>
 			</div>
 
 			<div className={`${styles.data} p-5`}>

@@ -51,6 +51,7 @@ const Login = (props) => {
 				console.log(response)
 				if (response.data.status) {
 					Cookies.set('authToken', response?.data?.token, { expires: 1, path: '/' });
+					Cookies.set('user', response?.data?.data?.username, { expires: 1, path: '/' })
 					setInfo(response?.data?.data?.username)
 
 					setTimeout(() => {
