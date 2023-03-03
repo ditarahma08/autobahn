@@ -1,6 +1,9 @@
 import styles from '@/styles/Login.module.css'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { api } from '@/utils/api';
+import Cookies from 'js-cookie';
+
 import MainLayout from '../layouts/MainLayout'
 
 const Login = () => {
@@ -34,13 +37,59 @@ const Login = () => {
 		formState === 'login' ? setFormState('signup') : setFormState('login')
 	}
 
+	const loginUser = async () => {
+		const params = {
+			email: email,
+			password: password
+		}
+
+		try {
+			await api.post(`${process.env.BASE_URL}api/v1/user/signin`, params).then(response => {
+				console.log(response)
+				if (response.data.status) {
+					Cookies.set('authToken', response?.data?.token, { expires: 1, path: '/' });
+					console.log('harusnya kesini')
+
+					setTimeout(() => {
+						router.push(`/dashboard/${name}`)
+					}, 500)
+				}
+			})
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
+	const registerUser = async () => {
+		const params = {
+			"fullname": username,
+			"email": email,
+			"password": password
+		}
+
+		try {
+			await api.post(`${process.env.BASE_URL}api/v1/user/signup`, params).then(response => {
+				if (response.data.status) {
+					setSuccessSignUp(true)
+					setInfo(username)
+				}
+			});
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
 	const sendForm = () => {
-		router.push(`/dashboard`)
+		formState === 'login' ? loginUser() : registerUser()
 	}
 
 	useEffect(() => {
 		checkFormEmpty();
 	}, [email, password, confirmPassword])
+
+	useEffect(() => {
+		setSuccessSignUp(false)
+	}, [formState])
 
 	return (
 		<>

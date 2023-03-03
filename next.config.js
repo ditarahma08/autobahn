@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
+module.exports = () => {
+  const env = {
+    BASE_URL: 'http://localhost:3000/'
+    // BASE_URL: 'http://0.0.0.0:3000/'
+  }
 
-module.exports = nextConfig
+  return {
+    reactStrictMode: true,
+    env
+  }
+}
