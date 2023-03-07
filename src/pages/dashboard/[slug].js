@@ -41,7 +41,6 @@ const Dashboard = (props) => {
 	  labels,
 	  datasets: [
 	    {
-	      label: 'Dataset 2',
 	      data: [75, 100, 80, 90, 40],
 	      backgroundColor: 'rgba(53, 162, 235, 0.5)',
 	    },

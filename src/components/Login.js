@@ -48,7 +48,6 @@ const Login = (props) => {
 
 		try {
 			await api.post(`${process.env.BASE_URL}api/v1/user/signin`, params).then(response => {
-				console.log(response)
 				if (response.data.status) {
 					Cookies.set('authToken', response?.data?.token, { expires: 1, path: '/' });
 					Cookies.set('user', response?.data?.data?.username, { expires: 1, path: '/' })
@@ -73,9 +72,35 @@ const Login = (props) => {
 
 		try {
 			await api.post(`${process.env.BASE_URL}api/v1/user/signup`, params).then(response => {
+				createData(params)
 				if (response.data.status) {
 					setSuccessSignUp(true)
 					setInfo(username)
+				}
+			});
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
+	const createData = async (user) => {
+		const params = {
+			labels: ['Issue A', 'Issue B', 'Issue C', 'Issue D'],
+			datasets: [
+		    {
+		      data: [75, 100, 80, 90, 40],
+		      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+		    },
+		  ],
+		  createdBy: user
+		}
+
+		try {
+			await api.post(`${process.env.BASE_URL}api/v1/chart/add`, params).then(response => {
+				console.log(response)
+				if (response.data.status) {
+					// setSuccessSignUp(true)
+					// setInfo(username)
 				}
 			});
 		} catch (e) {
