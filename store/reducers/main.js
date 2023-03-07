@@ -1,7 +1,7 @@
 import * as t from "../types";
 
 const main = (state = {
-    name: "guest",
+    name: "guest"
 }, action) => {
   switch(action.type){
     case t.SET_NAME:

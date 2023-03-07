@@ -14,7 +14,7 @@ const Login = (props) => {
 
 	const [formState, setFormState] = useState('login');
 	const [username, setUsername] = useState('')
-	const [email, setEmail] = useState('');
+	const [userEmail, setUserEmail] = useState('');
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [isDisabled, setIsDisabled] = useState(true)
@@ -22,18 +22,18 @@ const Login = (props) => {
 
 	const checkFormEmpty = () => {
 		if (formState === 'login') {
-			if (email.trim() !== '' && password.trim() !== '') {
+			if (userEmail.trim() !== '' && password.trim() !== '') {
 				setIsDisabled(false)
 			}
 		} else {
-			if (email.trim() !== '' && password.trim() !== '' && confirmPassword.trim() !== '' && (password === confirmPassword)) {
+			if (userEmail.trim() !== '' && password.trim() !== '' && confirmPassword.trim() !== '' && (password === confirmPassword)) {
 				setIsDisabled(false)
 			}
 		}
 	}
 
 	const changeForm = () => {
-		setEmail('')
+		setUserEmail('')
 		setPassword('')
 		setConfirmPassword('')
 		setIsDisabled(true)
@@ -42,7 +42,7 @@ const Login = (props) => {
 
 	const loginUser = async () => {
 		const params = {
-			email: email,
+			email: userEmail,
 			password: password
 		}
 
@@ -51,10 +51,10 @@ const Login = (props) => {
 				if (response.data.status) {
 					Cookies.set('authToken', response?.data?.token, { expires: 1, path: '/' });
 					Cookies.set('user', response?.data?.data?.username, { expires: 1, path: '/' })
-					setInfo(response?.data?.data?.username)
+					setInfo(response?.data?.data?.id)
 
 					setTimeout(() => {
-						router.push(`/dashboard/${response?.data?.data?.username}`)
+						router.push(`/dashboard/${response?.data?.data?.id}`)
 					}, 500)
 				}
 			})
@@ -66,16 +66,15 @@ const Login = (props) => {
 	const registerUser = async () => {
 		const params = {
 			"fullname": username,
-			"email": email,
+			"email": userEmail,
 			"password": password
 		}
 
 		try {
 			await api.post(`${process.env.BASE_URL}api/v1/user/signup`, params).then(response => {
-				createData(params)
 				if (response.data.status) {
+					createData(response.data.newUser._id)
 					setSuccessSignUp(true)
-					setInfo(username)
 				}
 			});
 		} catch (e) {
@@ -83,24 +82,18 @@ const Login = (props) => {
 		}
 	}
 
-	const createData = async (user) => {
+	const createData = async (id) => {
 		const params = {
 			labels: ['Issue A', 'Issue B', 'Issue C', 'Issue D'],
-			datasets: [
-		    {
-		      data: [75, 100, 80, 90, 40],
-		      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-		    },
-		  ],
-		  createdBy: user
+	    datasets: [75, 100, 80, 90, 40],
+	    color: 'rgba(53, 162, 235, 0.5)',
+		  userId: id
 		}
 
 		try {
 			await api.post(`${process.env.BASE_URL}api/v1/chart/add`, params).then(response => {
-				console.log(response)
 				if (response.data.status) {
-					// setSuccessSignUp(true)
-					// setInfo(username)
+					setInfo(response.data.newChart.userId)
 				}
 			});
 		} catch (e) {
@@ -114,7 +107,7 @@ const Login = (props) => {
 
 	useEffect(() => {
 		checkFormEmpty();
-	}, [email, password, confirmPassword])
+	}, [userEmail, password, confirmPassword])
 
 	useEffect(() => {
 		setSuccessSignUp(false)
@@ -139,8 +132,8 @@ const Login = (props) => {
 	  					type="email"
 	  					className={`form-control ${styles.formInput}`}
 	  					placeholder="email"
-	  					value={email}
-	  					onChange={(e) => setEmail(e.target.value)}
+	  					value={userEmail}
+	  					onChange={(e) => setUserEmail(e.target.value)}
 	  				/>
 
 	  				<input

@@ -10,6 +10,8 @@ import styles from '@/styles/Dashboard.module.css'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { connect } from "react-redux"
+import { api } from '@/utils/api';
 
 ChartJS.register(
   CategoryScale,
@@ -47,6 +49,17 @@ const Dashboard = (props) => {
 	  ],
 	}
 
+	const fetchChartData = async (id) => {
+		console.log(id)
+		try {
+			await api.get(`${process.env.BASE_URL}api/v1/chart/${id}`).then((response) => {
+				console.log(response)
+			})
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
 	const logout = () => {
 		token && Cookies.remove('authToken', { path: '/' })
 		router.push('/')
@@ -56,7 +69,11 @@ const Dashboard = (props) => {
 		if (!token) {
 			router.push('/')
 		}
-	})
+	}, [])
+
+	useEffect(() => {
+		fetchChartData(slug)
+	}, [slug])
 
 	return (
 		<div className={`container`}>
@@ -88,7 +105,11 @@ const Dashboard = (props) => {
 	)
 }
 
-export default Dashboard
+const mapStateToProps = state => {
+	return { userId: state.main.userId }
+}
+
+export default connect(mapStateToProps)(Dashboard)
 
 export async function getServerSideProps({ query }) {
 	 const { slug } = query;
