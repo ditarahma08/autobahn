@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import { api } from '@/utils/api';
+import MainLayout from '../../layouts/MainLayout'
 
 ChartJS.register(
   CategoryScale,
@@ -27,6 +28,7 @@ const Dashboard = (props) => {
 	const router = useRouter();
 
 	const [chartData, setChartData] = useState({})
+	const [userData, setUserData] = useState({})
 
 	const options = {
 	  responsive: true,
@@ -69,6 +71,18 @@ const Dashboard = (props) => {
 		}
 	}
 
+	const fetchUserData = async (id) => {
+		try {
+			await api.get(`${process.env.BASE_URL}api/v1/user/${id}`).then((response) => {
+				if (response.data) {
+					setUserData(response.data)
+				}
+			})
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
 	const logout = () => {
 		token && Cookies.remove('authToken', { path: '/' })
 		router.push('/')
@@ -82,12 +96,14 @@ const Dashboard = (props) => {
 
 	useEffect(() => {
 		fetchChartData(slug)
+		fetchUserData(slug)
 	}, [slug])
 
 	return (
+		<MainLayout>
 		<div className={`container`}>
 			<div className={`d-flex justify-content-between m-5`}>
-				<p>Hello, {slug}</p>
+				<p>Hello, {userData?.fullname}</p>
 				<p className={styles.logout} onClick={() => logout()}>Logout</p>
 			</div>
 
@@ -95,7 +111,7 @@ const Dashboard = (props) => {
 				<div className={`d-flex justify-content-around mb-5`}>
 					<div className={`${styles.bar} d-flex flex-column`}>
 						<p>System Score</p>
-						<span>{chartData?.score}%</span>
+						<span>{chartData?.score}</span>
 					</div>
 
 					<div className={`${styles.bar} d-flex flex-column`}>
@@ -113,6 +129,7 @@ const Dashboard = (props) => {
 				</div>
 			</div>
 		</div>
+		</MainLayout>
 	)
 }
 

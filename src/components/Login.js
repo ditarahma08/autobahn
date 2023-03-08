@@ -8,6 +8,8 @@ import Cookies from 'js-cookie';
 
 import MainLayout from '../layouts/MainLayout'
 
+const datasetsDefault = [75, 100, 80, 90, 40]
+
 const Login = (props) => {
 	const { name, setInfo } = props
 	const router = useRouter();
@@ -85,9 +87,9 @@ const Login = (props) => {
 	const createData = async (id) => {
 		const params = {
 			labels: ['Issue A', 'Issue B', 'Issue C', 'Issue D'],
-	    datasets: [75, 100, 80, 90, 40],
+	    datasets: datasetsDefault,
 	    color: 'rgba(53, 162, 235, 0.5)',
-	    score: 100,
+	    score: datasetsDefault.reduce((item, a) => item + a, 0),
 	    scoreChange: 10,
 		  userId: id
 		}
