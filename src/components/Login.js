@@ -87,6 +87,8 @@ const Login = (props) => {
 			labels: ['Issue A', 'Issue B', 'Issue C', 'Issue D'],
 	    datasets: [75, 100, 80, 90, 40],
 	    color: 'rgba(53, 162, 235, 0.5)',
+	    score: 100,
+	    scoreChange: 10,
 		  userId: id
 		}
 

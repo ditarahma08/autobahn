@@ -9,7 +9,7 @@ import { Bar } from 'react-chartjs-2'
 import styles from '@/styles/Dashboard.module.css'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { connect } from "react-redux"
 import { api } from '@/utils/api';
 
@@ -26,6 +26,8 @@ const Dashboard = (props) => {
 	const { slug } = props
 	const router = useRouter();
 
+	const [chartData, setChartData] = useState({})
+
 	const options = {
 	  responsive: true,
 	  maintainAspectRatio: true,
@@ -37,23 +39,30 @@ const Dashboard = (props) => {
 	  }
 	}
 
-	const labels = ['Issue A', 'Issue B', 'Issue C', 'Issue D']
+	const assignChartData = async (params) => {
+		let newData = {
+			score: params?.score,
+			scoreChange: params?.scoreChange,
+			chart: {
+					labels: params?.labels,
+					datasets: [
+						{
+							data: params?.datasets,
+							backgroundColor: params?.color
+						}
+					]
+				}
+			}
 
-	const data = {
-	  labels,
-	  datasets: [
-	    {
-	      data: [75, 100, 80, 90, 40],
-	      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-	    },
-	  ],
+			setChartData(newData)
 	}
 
 	const fetchChartData = async (id) => {
-		console.log(id)
 		try {
 			await api.get(`${process.env.BASE_URL}api/v1/chart/${id}`).then((response) => {
-				console.log(response)
+				if (response.data) {
+					assignChartData(response?.data)
+				}
 			})
 		} catch (e) {
 			console.log(e)
@@ -86,18 +95,20 @@ const Dashboard = (props) => {
 				<div className={`d-flex justify-content-around mb-5`}>
 					<div className={`${styles.bar} d-flex flex-column`}>
 						<p>System Score</p>
-						<span>100%</span>
+						<span>{chartData?.score}%</span>
 					</div>
 
 					<div className={`${styles.bar} d-flex flex-column`}>
 						<p>System Score Changes</p>
-						<span>10%</span>
+						<span>{chartData?.scoreChange}%</span>
 					</div>
 				</div>
 
 				<div className={`mt-5`}>
 					<div className={styles.chart}>
-						<Bar options={options} data={data} />
+					{chartData?.chart && (
+						<Bar options={options} data={chartData?.chart} />
+					)}
 					</div>
 				</div>
 			</div>
